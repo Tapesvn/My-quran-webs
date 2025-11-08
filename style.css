@@ -22,7 +22,7 @@ body {
   margin-left: 4px;
   cursor: pointer;
   font-size: 16px;
-  font-family: "Bernard MT Condensed", sans-serif; /* UPDATED: Desktop buttons use Bernard */
+  font-family: "Bernard MT Condensed", sans-serif; /* Desktop buttons use Bernard */
 }
 
 /* Hamburger button for mobile */
@@ -198,5 +198,15 @@ body {
 @media (min-width: 1024px) {
     #hamburger-button {
         display: none;
+    }
+}
+
+/* Hide desktop top buttons on mobile */
+@media (max-width: 768px) {
+    #top-buttons {
+        display: none;
+    }
+    #hamburger-button {
+        display: block; /* ensure hamburger shows */
     }
 }
