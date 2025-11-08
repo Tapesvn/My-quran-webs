@@ -34,6 +34,7 @@ body {
   background: rgba(0,0,0,0.3);
   display: none;
   z-index: 40;
+  transition: opacity 0.3s ease;
 }
 
 /* Sidebar */
@@ -48,7 +49,7 @@ body {
   top: 0;
   left: 0;
   transform: translateX(-100%);
-  transition: 0.3s;
+  transition: transform 0.3s ease;
   z-index: 50;
 }
 #chapter-sidebar.open { transform: translateX(0); }
@@ -123,10 +124,12 @@ body {
   line-height: 1.6;
   background: #2b2b2b;
   color: white;
-  transition: 0.3s;
+  transition: background 0.3s, color 0.3s;
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* Home content left-aligned by default */
+  position: relative;
+  z-index: 1;
 }
 
 /* Chapter content container */
@@ -141,7 +144,7 @@ body {
   display: flex;
   justify-content: space-between; /* Dutch left, Arabic right */
   align-items: baseline; /* same vertical height */
-  margin-bottom: 80px; /* bigger space between titles and first verse */
+  margin-bottom: 80px; /* space between titles and first verse */
   width: 100%;
 }
 
@@ -154,8 +157,8 @@ body {
 
 .chapter-title-arabic {
   font-size: 40px;
-  font-family: 'Noto Naskh', serif;
-  font-weight: 500; /* slightly thicker than default but thinner than before */
+  font-family: 'Amiri', serif; /* traditional Quranic Naskh */
+  font-weight: 520; /* slightly thicker */
   text-align: right;
 }
 
@@ -168,6 +171,23 @@ body {
   width: 100%;
 }
 .verse p { margin: 4px 0; }
-.verse p:first-child { font-weight: 400; font-size: 26px; font-family: 'Noto Naskh', serif; direction: rtl; } /* Arabic, thinner */
+.verse p:first-child { font-size: 26px; font-family: 'Amiri', serif; direction: rtl; font-weight: 400; } /* Arabic */
 .verse p:nth-child(2) { font-size: 22px; font-family: 'Gabriola', serif; color: red; } /* Transliteration */
 .verse p:nth-child(3) { font-size: 22px; font-family: 'Gabriola', serif; color: #ccc; } /* Dutch translation */
+
+/* Hamburger mini-panel for mobile */
+#mobile-menu-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  background-color: #2b2b2b;
+  z-index: 60;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+}
+#mobile-menu-panel button {
+  margin-bottom: 8px;
+}

@@ -2,7 +2,8 @@ const home = document.getElementById('home-button'),
       chaptersBtn = document.getElementById('hoofdstukken-button'),
       sidebar = document.getElementById('chapter-sidebar'),
       overlay = document.getElementById('overlay'),
-      content = document.getElementById('content-area');
+      content = document.getElementById('content-area'),
+      mobileMenuPanel = document.getElementById('mobile-menu-panel');
 
 function resetBG(){
   sidebar.classList.remove('open');
@@ -16,8 +17,8 @@ function clearCh(){ sidebar.innerHTML=''; }
 
 const chapters=[
   {n:1,d:"De Opener",t:"(EL' FAATIHA')",a:"سُورَةُ ٱلْفَاتِحَةِ",jsonFile:"chapters/001-al-fatihah.json"},
-  {n:2,d:"De Koe",t:"(EL' BAQARA')",a:"سُورَةُ البَقَرَةِ",c:"<h2>De Koe</h2><p>Inhoud van Surah Al-Baqara komt hier...</p>"},
-  {n:3,d:"Familie Van Amram",t:"(AALI EM'RAAN)",a:"سُورَةُ آلِ عِمۡرَانَ",c:"<h2>Familie Van Amram</h2><p>Inhoud van Surah Aal-Imran komt hier...</p>"}
+  {n:2,d:"De Koe",t:"(EL' BAQARA')",a:"سُورَةُ البَقَرَةِ",c:"<h2>De Koe</h2><p>Inhoud...</p>"},
+  {n:3,d:"Familie Van Amram",t:"(AALI EM'RAAN)",a:"سُورَةُ آلِ عِمۡرَانَ",c:"<h2>Familie Van Amram</h2><p>Inhoud...</p>"}
 ];
 
 function createChBtns(){
@@ -40,41 +41,37 @@ function createChBtns(){
     btn.onclick=()=>{
       resetBG();
       content.innerHTML=""; // clear content
+      const container = document.createElement('div');
+      container.className='chapter-content-container';
+      content.appendChild(container);
+
       if(ch.jsonFile){
         fetch(ch.jsonFile)
           .then(res=>res.json())
           .then(data=>{
-            // Chapter content wrapper
-            content.innerHTML = `<div class="chapter-content-container"></div>`;
-            const container = content.querySelector('.chapter-content-container');
-
-            // Chapter titles
-            container.innerHTML += `
-              <div class="chapter-titles-container">
-                <div class="chapter-title-dutch">${ch.d}</div>
-                <div class="chapter-title-arabic">${ch.a}</div>
-              </div>
-            `;
+            const titles = document.createElement('div');
+            titles.className='chapter-titles-container';
+            titles.innerHTML = `<div class="chapter-title-dutch">${ch.d}</div>
+                                <div class="chapter-title-arabic">${ch.a}</div>`;
+            container.appendChild(titles);
 
             for(let verseNum in data["1"].ayahs){
               const verse = data["1"].ayahs[verseNum];
-              container.innerHTML += `
-                <div class="verse">
-                  <p>${verse.arabic}</p>
-                  <p>${verse.transliteration}</p>
-                  <p>${verse.dutch}</p>
-                </div>
-              `;
+              const v = document.createElement('div');
+              v.className='verse';
+              v.innerHTML = `<p>${verse.arabic}</p>
+                             <p>${verse.transliteration}</p>
+                             <p>${verse.dutch}</p>`;
+              container.appendChild(v);
             }
             window.scrollTo(0,0);
           })
-          .catch(()=>{content.innerHTML='<p>Kon hoofdstuk niet laden.</p>';});
+          .catch(()=>{container.innerHTML='<p>Kon hoofdstuk niet laden.</p>';});
       } else {
-        content.innerHTML = ch.c;
+        container.innerHTML = ch.c;
       }
     };
 
-    // Sidebar button layout
     const row = document.createElement('div'); row.className='row';
     const num = document.createElement('span'); num.className='number'; num.textContent = ch.n; row.appendChild(num);
     const txtCol = document.createElement('div'); txtCol.className='text-column';
@@ -88,12 +85,26 @@ function createChBtns(){
 }
 
 overlay.addEventListener('click',()=>{sidebar.classList.add('hide'); setTimeout(resetBG,300)});
-home.addEventListener('click',()=>{if(!sidebar.classList.contains('open')) content.innerHTML="<h2>Home</h2><p>Dit is de startpagina van de site.</p>"});
+
+home.addEventListener('click',()=>{
+  if(!sidebar.classList.contains('open')){
+    content.innerHTML="<h2>Home</h2><p>Dit is de startpagina van de site.</p>";
+  }
+});
+
+// Desktop hoofdstukken
 chaptersBtn.addEventListener('click',()=>{
   sidebar.classList.add('open');
   overlay.style.display='block';
-  content.style.background='#121212';
-  content.style.color='#aaa';
-  content.innerHTML="<h2>Welkom bij Hoofdstukken</h2><p>Klik op een hoofdstuk om de inhoud te bekijken.</p>";
   createChBtns();
+});
+
+// Mobile hamburger menu
+const hamburger = document.getElementById('hamburger-button');
+hamburger.addEventListener('click',()=>{
+  mobileMenuPanel.style.display='flex';
+  mobileMenuPanel.innerHTML = `<button id="home-mobile">Home</button>
+                               <button id="chapters-mobile">Hoofdstukken</button>`;
+  document.getElementById('home-mobile').onclick = ()=> { content.innerHTML="<h2>Home</h2><p>Startpagina</p>"; mobileMenuPanel.style.display='none'; };
+  document.getElementById('chapters-mobile').onclick = ()=> { createChBtns(); mobileMenuPanel.style.display='none'; sidebar.classList.add('open'); overlay.style.display='block'; };
 });
