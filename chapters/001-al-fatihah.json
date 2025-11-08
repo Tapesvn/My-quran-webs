@@ -1,0 +1,43 @@
+{
+  "1": {
+    "surah_name": "Al-Fātiḥah",
+    "translation_name": "De Opening",
+    "ayahs": {
+      "1": {
+        "arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        "transliteration": "Bis'mi-llahi Er' Rah'maani Er' Rahiim",
+        "dutch": "In de naam van GOD, de BARMHARTIG, de GENADEVOL"
+      },
+      "2": {
+        "arabic": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+        "transliteration": "El'Hamdu Lillahi, Rabbi El'Äälamiin",
+        "dutch": "Alle eer aan GOD, HEERSER der werelden"
+      },
+      "3": {
+        "arabic": "الرَّحْمَٰنِ الرَّحِيمِ",
+        "transliteration": "Er' Rah'maani, Er' Rahiim",
+        "dutch": "De BARMHARTIG, de GENADEVOL"
+      },
+      "4": {
+        "arabic": "مَالِكِ يَوْمِ الدِّينِ",
+        "transliteration": "Maaliki Yaw'mi Ed'Diin",
+        "dutch": "De bezitter van de Dag des Oordeels"
+      },
+      "5": {
+        "arabic": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+        "transliteration": "Iyyaaka Na'budu Wa Iyyaaka Nas'taeen",
+        "dutch": "Het is U die wij aanbidden en het is U die wij om hulp vragen"
+      },
+      "6": {
+        "arabic": "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+        "transliteration": "Eh'di-naa Es'Siraato El'Mus'taqiim",
+        "dutch": "Begeleid ons naar het rechte pad"
+      },
+      "7": {
+        "arabic": "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+        "transliteration": "Siraato Ellaziina An'äm'ta Älai'-, Gai'ri El'Mag'duubi Walaa Ed'Doalliin",
+        "dutch": "Het pad van degenen die U begunstigd heeft, niet van degenen tot wie woedde behoort, noch van hen die afdwalen"
+      }
+    }
+  }
+}

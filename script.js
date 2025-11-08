@@ -1,94 +1,99 @@
-const homeButton = document.getElementById('home-button');
-const hoofdstukkenButton = document.getElementById('hoofdstukken-button');
-const sidebar = document.getElementById('chapter-sidebar');
-const overlay = document.getElementById('overlay');
-const contentArea = document.getElementById('content-area');
+const home = document.getElementById('home-button'),
+      chaptersBtn = document.getElementById('hoofdstukken-button'),
+      sidebar = document.getElementById('chapter-sidebar'),
+      overlay = document.getElementById('overlay'),
+      content = document.getElementById('content-area');
 
-function clearChapters() {
-  sidebar.innerHTML = '';
+function resetBG(){
+  sidebar.classList.remove('open');
+  sidebar.classList.remove('hide');
+  overlay.style.display='none';
+  content.style.background='#2b2b2b';
+  content.style.color='white';
 }
 
-function createChapterButton(number, dutchName, transliteration, arabicName, onClick, isFirst=false) {
-  const button = document.createElement('button');
-  button.className = 'chapter-button';
-  if (isFirst) button.classList.add('first-chapter');
-  button.onclick = onClick;
+function clearCh(){ sidebar.innerHTML=''; }
 
-  const rowDiv = document.createElement('div');
-  rowDiv.className = 'row';
+const chapters=[
+  {n:1,d:"De Opener",t:"(EL' FAATIHA')",a:"سُورَةُ ٱلْفَاتِحَةِ",jsonFile:"chapters/001-al-fatihah.json"},
+  {n:2,d:"De Koe",t:"(EL' BAQARA')",a:"سُورَةُ البَقَرَةِ",c:"<h2>De Koe</h2><p>Inhoud van Surah Al-Baqara komt hier...</p>"},
+  {n:3,d:"Familie Van Amram",t:"(AALI EM'RAAN)",a:"سُورَةُ آلِ عِمۡرَانَ",c:"<h2>Familie Van Amram</h2><p>Inhoud van Surah Aal-Imran komt hier...</p>"}
+];
 
-  const numberSpan = document.createElement('span');
-  numberSpan.className = 'number';
-  numberSpan.textContent = number;
-  rowDiv.appendChild(numberSpan);
+function createChBtns(){
+  clearCh();
+  const hdr = document.createElement('div');
+  hdr.id = 'chapter-header';
+  hdr.textContent = "Het Boek Van God";
+  const close = document.createElement('span');
+  close.id = 'close-chapters';
+  close.textContent='×';
+  close.onclick=()=>{sidebar.classList.add('hide'); setTimeout(resetBG,300)};
+  hdr.appendChild(close);
+  sidebar.appendChild(hdr);
 
-  const textColumn = document.createElement('div');
-  textColumn.className = 'text-column';
+  chapters.forEach((ch,i)=>{
+    const btn = document.createElement('button');
+    btn.className='chapter-button';
+    if(i==0) btn.classList.add('first-chapter');
 
-  const arabicSpan = document.createElement('span');
-  arabicSpan.className = 'arabic';
-  arabicSpan.textContent = arabicName;
-  textColumn.appendChild(arabicSpan);
+    btn.onclick=()=>{
+      resetBG();
+      content.innerHTML=""; // clear content
+      if(ch.jsonFile){
+        fetch(ch.jsonFile)
+          .then(res=>res.json())
+          .then(data=>{
+            // Chapter content wrapper
+            content.innerHTML = `<div class="chapter-content-container"></div>`;
+            const container = content.querySelector('.chapter-content-container');
 
-  const dutchTranslitDiv = document.createElement('div');
-  dutchTranslitDiv.className = 'dutch-translit';
+            // Chapter titles
+            container.innerHTML += `
+              <div class="chapter-titles-container">
+                <div class="chapter-title-dutch">${ch.d}</div>
+                <div class="chapter-title-arabic">${ch.a}</div>
+              </div>
+            `;
 
-  const dutchSpan = document.createElement('span');
-  dutchSpan.textContent = dutchName;
-  dutchTranslitDiv.appendChild(dutchSpan);
+            for(let verseNum in data["1"].ayahs){
+              const verse = data["1"].ayahs[verseNum];
+              container.innerHTML += `
+                <div class="verse">
+                  <p>${verse.arabic}</p>
+                  <p>${verse.transliteration}</p>
+                  <p>${verse.dutch}</p>
+                </div>
+              `;
+            }
+            window.scrollTo(0,0);
+          })
+          .catch(()=>{content.innerHTML='<p>Kon hoofdstuk niet laden.</p>';});
+      } else {
+        content.innerHTML = ch.c;
+      }
+    };
 
-  const translitSpan = document.createElement('span');
-  translitSpan.className = 'transliteration';
-  translitSpan.textContent = transliteration;
-  dutchTranslitDiv.appendChild(translitSpan);
-
-  textColumn.appendChild(dutchTranslitDiv);
-  rowDiv.appendChild(textColumn);
-  button.appendChild(rowDiv);
-  sidebar.appendChild(button);
-}
-
-function openSidebar() {
-  sidebar.style.display = 'block';
-  overlay.style.display = 'block';
-  contentArea.style.backgroundColor = '#121212';
-  contentArea.style.color = '#aaaaaa';
-}
-
-function closeSidebar() {
-  sidebar.style.display = 'none';
-  overlay.style.display = 'none';
-  contentArea.style.backgroundColor = '#2b2b2b';
-  contentArea.style.color = 'white';
-}
-
-homeButton.addEventListener('click', closeSidebar);
-
-hoofdstukkenButton.addEventListener('click', () => {
-  openSidebar();
-  clearChapters();
-
-  const headerDiv = document.createElement('div');
-  headerDiv.id = 'chapter-header';
-  headerDiv.textContent = "Het Boek Van God";
-
-  const closeBtn = document.createElement('span');
-  closeBtn.id = 'close-chapters';
-  closeBtn.textContent = '×';
-  closeBtn.onclick = closeSidebar;
-
-  headerDiv.appendChild(closeBtn);
-  sidebar.appendChild(headerDiv);
-
-  createChapterButton(1, "De Opener", "(EL' FAATIHA')", "سُورَةُ ٱلْفَاتِحَةِ", () => {
-    contentArea.innerHTML = `<h2>De Opener</h2><p>Bismillah ir-Rahman ir-Rahim...</p>`;
-  }, true);
-
-  createChapterButton(2, "De Koe", "(EL' BAQARA')", "سُورَةُ البَقَرَةِ", () => {
-    contentArea.innerHTML = `<h2>De Koe</h2><p>Inhoud van Surah Al-Baqara komt hier...</p>`;
+    // Sidebar button layout
+    const row = document.createElement('div'); row.className='row';
+    const num = document.createElement('span'); num.className='number'; num.textContent = ch.n; row.appendChild(num);
+    const txtCol = document.createElement('div'); txtCol.className='text-column';
+    const arab = document.createElement('span'); arab.className='arabic'; arab.textContent = ch.a; txtCol.appendChild(arab);
+    const dt = document.createElement('div'); dt.className='dutch-translit';
+    const dutch = document.createElement('span'); dutch.textContent = ch.d;
+    const tr = document.createElement('span'); tr.className='transliteration'; tr.textContent = ch.t;
+    dt.appendChild(dutch); dt.appendChild(tr); txtCol.appendChild(dt); row.appendChild(txtCol); btn.appendChild(row);
+    sidebar.appendChild(btn);
   });
+}
 
-  createChapterButton(3, "Familie Van Amram", "(AALI EM'RAAN)", "سُورَةُ آلِ عِمۡرَانَ", () => {
-    contentArea.innerHTML = `<h2>Familie Van Amram</h2><p>Inhoud van Surah Aal-Imran komt hier...</p>`;
-  });
+overlay.addEventListener('click',()=>{sidebar.classList.add('hide'); setTimeout(resetBG,300)});
+home.addEventListener('click',()=>{if(!sidebar.classList.contains('open')) content.innerHTML="<h2>Home</h2><p>Dit is de startpagina van de site.</p>"});
+chaptersBtn.addEventListener('click',()=>{
+  sidebar.classList.add('open');
+  overlay.style.display='block';
+  content.style.background='#121212';
+  content.style.color='#aaa';
+  content.innerHTML="<h2>Welkom bij Hoofdstukken</h2><p>Klik op een hoofdstuk om de inhoud te bekijken.</p>";
+  createChBtns();
 });
